@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Dimensions,
-  Image,
   ImageBackground,
   Pressable,
   StatusBar,
@@ -13,63 +11,10 @@ import {
 } from 'react-native';
 import Canvas, {Image as CanvasImage} from 'react-native-canvas';
 
-import exampleImage from '../assets/image.jpg';
-const exampleImageUri = Image.resolveAssetSource(exampleImage).uri;
+const exampleImageUri =
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb';
 
-console.log('exampleImageUri:', exampleImageUri);
-
-let imageDataMore = {
-  images: [
-    {
-      src: 'https://picsum.photos/id/29/200/300',
-      tlx: 0.05,
-      tly: 0.05,
-      trx: 0.45,
-      try: 0.05,
-      blx: 0.05,
-      bly: 0.45,
-      brx: 0.45,
-      bry: 0.45,
-      Frame: 'https://picsum.photos/id/29/200/300',
-    },
-    {
-      src: 'https://picsum.photos/id/26/200/300',
-      tlx: 0.55,
-      tly: 0.05,
-      trx: 0.95,
-      try: 0.05,
-      blx: 0.55,
-      bly: 0.45,
-      brx: 0.95,
-      bry: 0.45,
-      Frame: 'https://picsum.photos/id/29/200/300',
-    },
-    {
-      src: 'https://picsum.photos/id/585/200/300',
-      tlx: 0.05,
-      tly: 0.55,
-      trx: 0.45,
-      try: 0.55,
-      blx: 0.05,
-      bly: 0.95,
-      brx: 0.45,
-      bry: 0.95,
-      Frame: 'https://picsum.photos/id/29/200/300',
-    },
-    {
-      src: 'https://picsum.photos/id/58/200/300',
-      tlx: 0.55,
-      tly: 0.55,
-      trx: 0.95,
-      try: 0.55,
-      blx: 0.55,
-      bly: 0.95,
-      brx: 0.95,
-      bry: 0.95,
-      Frame: 'https://picsum.photos/id/29/200/300',
-    },
-  ],
-};
+const backgroundImage = require('../assets/4.png');
 
 let imageData = {
   images: [
@@ -147,14 +92,14 @@ let imageData = {
     // },
     {
       src: exampleImageUri,
-      tlx: 0.8251508506156806,
-      tly: 0.7249890952157644,
-      trx: 0.42116860536882256,
-      try: 0.7281309119347597,
-      blx: 0.8165785107537832,
-      bly: 0.37654773304757577,
-      brx: 0.4125962655069252,
-      bry: 0.37968954976657104,
+      tlx: 0.6228710462287099,
+      tly: 0.3794669642642857,
+      trx: 1.245742092457421,
+      try: 0.3794669642642857,
+      blx: 0.6228710462287099,
+      bly: 0.7250384284137196,
+      brx: 1.245742092457421,
+      bry: 0.7250384284137196,
       Frame: 'https://picsum.photos/id/29/200/300',
     },
   ],
@@ -169,20 +114,12 @@ const CanvasImageDisplay = () => {
   });
 
   const updateCoordinates = useCallback(() => {
-    if (Data.index === 0) {
-      setData({
-        index: 1,
-        imageData: imageDataMore,
-      });
-    } else {
-      setData({
-        index: 1,
-        imageData,
-      });
-    }
+    setData({
+      index: 1,
+      imageData,
+    });
   }, [Data, Data.index]);
 
-  // Draw the canvas on component mount
   const drawCanvas = useCallback(
     (canvas: Canvas | null) => {
       try {
@@ -197,31 +134,18 @@ const CanvasImageDisplay = () => {
         canvas.width = width;
         canvas.height = height;
 
-        context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas TO REDRAW
-
-        context.strokeStyle = 'black';
-        context.lineWidth = 2;
-
-        context.beginPath();
-        context.moveTo(0, height / 2);
-        context.lineTo(width, height / 2);
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(width / 2, 0);
-        context.lineTo(width / 2, height);
-        context.stroke();
+        context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas TO ReDRAW
 
         context.fillStyle = 'black';
         context.font = '13px Monospace';
         context.fillText(
           `(WIDTH: ${width.toFixed(5)}, HEIGHT: ${height.toFixed(5)})`,
           width - 300,
-          height - 20,
+          height - 40,
         );
 
         const images = [...Data.imageData.images];
-        images.reverse(); // Reverse the order TO GET FIRST IMAGE ON TOP
+        // images.reverse(); // Reverse the order TO GET FIRST IMAGE ON TOP
 
         images.forEach(eachImageData => {
           const image = new CanvasImage(canvas);
@@ -257,7 +181,7 @@ const CanvasImageDisplay = () => {
             const angle = Math.atan2(rty - lty, rtx - ltx);
 
             //* Check is coordinates are within canvas bounds
-            const clamp = (value, min, max) =>
+            const clamp = (value: number, min: number, max: number) =>
               Math.max(min, Math.min(max, value));
             const clampLtx = clamp(ltx, 0, canvas.width - imgWidth);
             const clampLty = clamp(lty, 0, canvas.height - imgHeight);
@@ -267,8 +191,6 @@ const CanvasImageDisplay = () => {
             const clampRty = clamp(rty, 0, canvas.height - imgHeight);
             const clampRbx = clamp(rbx, 0, canvas.width - imgWidth);
             const clampRby = clamp(rby, 0, canvas.height - imgHeight);
-
-            console.log('``````Divide``````');
 
             console.log(
               clampLtx,
@@ -290,20 +212,23 @@ const CanvasImageDisplay = () => {
               (clampLbx - clampLtx) ** 2 + (clampLby - clampLty) ** 2,
             );
 
-            // Draw the image with calculated width, height, and rotation angle
-            // context.translate(clampLtx, clampLty); // Translate to the top-left corner of the image
+            console.log(clampImgWidth, clampImgHeight);
+
+            // Visualize the bounding box and coordinates
+            context.lineWidth = 5;
+            context.strokeStyle = 'red';
+            context.strokeRect(clampLtx, clampLty, imgWidth - 5, imgHeight - 5);
+
+            context.fillStyle = 'red';
+            context.font = '12px Monospace';
+            context.fillText(':Start:', clampLtx, clampLty - 5);
+
             context.translate(clampLtx, clampLty); // Translate to the top-left corner of the image
             context.rotate(angle); // Rotate the context by the calculated angle
-            context.drawImage(image, 0, 0, clampImgWidth, clampImgHeight); // Draw the image
+            context.drawImage(image, 0, 0, imgWidth - 5, imgHeight - 5); // Draw the image
 
             // Reset transformation matrix
             context.setTransform(1, 0, 0, 1, 0, 0);
-
-            // Draw the frame using the same transformation
-            //  context.translate(clampLtx, clampLty); // Translate to the top-left corner of the frame
-            // context.translate(ltx, lty); // Translate to the top-left corner of the frame
-            // context.rotate(angle); // Rotate the context by the calculated angle
-            // context.drawImage(frameImage, 0, 0, imgWidth, imgHeight); // Draw the frame
 
             context.restore(); // Restore the saved drawing state
             // });
@@ -333,17 +258,10 @@ const CanvasImageDisplay = () => {
       <StatusBar translucent hidden />
       <ImageBackground
         resizeMode="contain"
-        source={require('../Assets/4.png')}
-        style={{
-          width: Dimensions.get('screen').width,
-          height: Dimensions.get('screen').height,
-        }}
-        imageStyle={{
-          aspectRatio: 9 / 16,
-        }}>
+        source={backgroundImage}
+        style={styles.imageBackground}>
         <Pressable
           onPress={() => {
-            imageData = imageData;
             if (canvasRef.current) {
               drawCanvas(canvasRef.current);
             }
@@ -358,13 +276,11 @@ const CanvasImageDisplay = () => {
 };
 
 const styles = StyleSheet.create({
-  canvasContainer: {
-    flex: 1,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  canvas: {
-    backgroundColor: 'transparent',
+  canvasContainer: {flex: 1},
+  canvas: {backgroundColor: 'transparent'},
+  imageBackground: {
+    width: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').height,
   },
 });
 
